@@ -131,7 +131,7 @@ export default function Register({ navigation }) {
             style={styles.textButton}
             onPress={() => navigation.goBack()}
           >
-            <Text style={[globalStyles.text, styles.buttonText]}>Go Back</Text>
+            <Text style={[globalStyles.text, styles.buttonText]}>Already Registered? <u>Login</u></Text>
           </TouchableOpacity>
         </View>
       </View>
