@@ -1,5 +1,8 @@
+import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import Login from './src/Login';
+import { NavigationContainer } from '@react-navigation/native';
+import AppNavigator from './src/AppNavigator';
+
 
 function Message({children}){
   return (
@@ -12,9 +15,9 @@ function Message({children}){
 export default function App() {
 
   return (
-    <View style={styles.container}>
-      <Login/>
-    </View>
+    <NavigationContainer>
+      <AppNavigator />
+    </NavigationContainer>
   );
 }
 

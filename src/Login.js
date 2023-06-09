@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import globalStyles from "./globalStyles";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import {
   StyleSheet,
@@ -9,11 +10,24 @@ import {
   TouchableOpacity,
 } from "react-native";
 
-const Login = () => {
+const Login = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const users = JSON.parse(await AsyncStorage.getItem('users')) || [];
+        console.log('Users:', users);
+      } catch (error) {
+        console.error('Failed to fetch users', error);
+      }
+    };
+
+    fetchUsers();
+  }, []);
 
   const validateEmail = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -36,19 +50,40 @@ const Login = () => {
 
   const handleEmailChange = (text) => {
     setEmailError("");
-    setEmail(text)
-  }
+    setEmail(text);
+  };
 
-  const handlePasswordChange = (text) =>{
-    setPasswordError("")
-    setPassword(text)
-  }
+  const handlePasswordChange = (text) => {
+    setPasswordError("");
+    setPassword(text);
+  };
+
+  // New loginUser function
+  const loginUser = async () => {
+    try {
+      // Get the array of users
+      const users = JSON.parse(await AsyncStorage.getItem('users')) || [];
+
+      // Check if a user with the entered email and password exists
+      const userExists = users.some(user => user.email === email && user.password === password);
+
+      if (userExists) {
+        console.log('User logged in successfully');
+        // Navigate to the next screen
+      } else {
+        console.error('Invalid credentials');
+      }
+    } catch (error) {
+      console.error('Failed to log in', error);
+    }
+  };
+
 
   const handleLogin = () => {
     const isEmailValid = validateEmail();
     const isPasswordValid = validatePassword();
     if (isEmailValid && isPasswordValid) {
-      console.warn(email, password);
+      loginUser(); // <-- Call loginUser instead of logging to console
       setEmail("");
       setPassword("");
     }
@@ -75,9 +110,16 @@ const Login = () => {
             value={password}
             onChangeText={handlePasswordChange}
           />
-          {passwordError ? <Text style={styles.error}>{passwordError}</Text> : null}
+          {passwordError ? (
+            <Text style={styles.error}>{passwordError}</Text>
+          ) : null}
           <TouchableOpacity style={styles.button} onPress={handleLogin}>
             <Text style={[globalStyles.text, styles.buttonText]}>Login</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.textButton} onPress={() => navigation.navigate("Register")}>
+            <Text style={[globalStyles.text, styles.buttonText]}>
+              Don't have an account? <u>Register</u>
+            </Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -126,6 +168,12 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 2,
     backgroundColor: "#508bd4",
+    marginTop: 10,
+    alignItems: "center",
+  },
+  textButton: {
+    padding: 10,
+    borderRadius: 2,
     marginTop: 10,
     alignItems: "center",
   },
