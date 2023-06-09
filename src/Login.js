@@ -69,7 +69,7 @@ const Login = ({ navigation }) => {
 
       if (userExists) {
         console.log('User logged in successfully');
-        // Navigate to the next screen
+        navigation.navigate('WatchListScreen'); // <-- Navigate to WatchlistScreen
       } else {
         console.error('Invalid credentials');
       }
