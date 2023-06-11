@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useFocusEffect } from "@react-navigation/native"; // <-- Import useFocusEffect
+import { useFocusEffect, useNavigation } from "@react-navigation/native"; // <-- Import useFocusEffect
 import GlobalStyles from "./GlobalStyles";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Swipeable } from "react-native-gesture-handler"; // <-- Import Swipeable
@@ -66,7 +66,7 @@ export default function WatchlistScreen({ navigation }) {
             data={watchlist}
             keyExtractor={(item) => item.symbol}
             renderItem={({ item }) => (
-              <SwipeableRow item={item} onDelete={removeFromWatchlist} />
+                <SwipeableRow item={item} onDelete={removeFromWatchlist} navigator={navigation}/>
             )}
           />
         ) : (
@@ -94,7 +94,7 @@ export default function WatchlistScreen({ navigation }) {
   );
 }
 
-function SwipeableRow({ item, onDelete }) {
+function SwipeableRow({ item, onDelete, navigator }) {
   const renderRightActions = () => {
     return (
       <TouchableOpacity onPress={() => onDelete(item.symbol)}>
@@ -107,7 +107,7 @@ function SwipeableRow({ item, onDelete }) {
 
   return (
     <Swipeable renderRightActions={renderRightActions}>
-      <TouchableOpacity>
+      <TouchableOpacity onPress={ ()=> navigator.navigate('StockDetails', {symbol:item.symbol}) }>
         <View style={styles.item}>
           <Text style={[GlobalStyles.text, styles.symbolText]}>
             {item.symbol}
@@ -203,12 +203,12 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   deleteBox: {
-    backgroundColor: 'red',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "red",
+    justifyContent: "center",
+    alignItems: "center",
     width: 100,
   },
   deleteText: {
-    color: '#FFF',
+    color: "#FFF",
   },
 });
