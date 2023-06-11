@@ -10,9 +10,8 @@ import {
   StyleSheet,
   TextInput,
   Alert,
-  TouchableOpacity
+  TouchableOpacity,
 } from "react-native"; // <-- Import FlatList
-
 
 export default function SearchScreen() {
   const [stocks, setStocks] = useState([]);
@@ -82,12 +81,15 @@ export default function SearchScreen() {
 
   return (
     <View style={styles.container}>
-      <TextInput
-        style={styles.input}
-        placeholder="Enter stock symbol, name or sector..."
-        onChangeText={setQuery}
-        value={query}
-      />
+      <View style={styles.SearchContainer}>
+        <TextInput
+          style={styles.input}
+          placeholder="Enter stock symbol, name or sector..."
+          placeholderTextColor="#feefdd"
+          onChangeText={setQuery}
+          value={query}
+        />
+      </View>
       {stocks.length > 0 ? (
         <FlatList
           data={filteredStocks}
@@ -123,9 +125,8 @@ const styles = StyleSheet.create({
     color: "#feefdd",
     padding: 20,
   },
-  SearchContainer: {
-    flex: 1,
-    margin: 20,
+  SearchContainer:{
+    marginTop:20
   },
   header: {
     marginTop: 50,
