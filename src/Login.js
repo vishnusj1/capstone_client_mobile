@@ -69,7 +69,7 @@ const Login = ({ navigation }) => {
 
       if (userExists) {
         console.log('User logged in successfully');
-        navigation.navigate('Home'); // <-- Navigate to Home screen of the App
+        navigation.navigate('Main'); // <-- Navigate to Home screen of the App
       } else {
         console.error('Invalid credentials');
       }
@@ -100,6 +100,7 @@ const Login = ({ navigation }) => {
             placeholderTextColor="#feefdd"
             value={email}
             onChangeText={handleEmailChange}
+            autoCapitalize="none"
           />
           {emailError ? <Text style={styles.error}>{emailError}</Text> : null}
           <TextInput
@@ -109,6 +110,7 @@ const Login = ({ navigation }) => {
             secureTextEntry
             value={password}
             onChangeText={handlePasswordChange}
+            autoCapitalize="none"
           />
           {passwordError ? (
             <Text style={styles.error}>{passwordError}</Text>
@@ -118,7 +120,7 @@ const Login = ({ navigation }) => {
           </TouchableOpacity>
           <TouchableOpacity style={styles.textButton} onPress={() => navigation.navigate("Register")}>
             <Text style={[GlobalStyles.text, styles.buttonText]}>
-              Don't have an account? <u>Register</u>
+              Don't have an account? <Text style={{ textDecorationLine: 'underline' }}>Register</Text>
             </Text>
           </TouchableOpacity>
         </View>

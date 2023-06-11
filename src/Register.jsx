@@ -20,7 +20,7 @@ export default function Register({ navigation }) {
     email: "",
     password: "",
   });
-  const [confirmPassword,setConfirmPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   const [showPassword, setShowPassword] = useState(false); // state variable to show/hide password input
 
@@ -85,34 +85,44 @@ export default function Register({ navigation }) {
           <TextInput
             style={styles.input}
             placeholder="First Name"
+            placeholderTextColor="#feefdd"
             onChangeText={(text) => setUser({ ...user, fname: text })} // <-- New input field
             value={user.fname}
           />
           <TextInput
             style={styles.input}
             placeholder="Last Name"
+            placeholderTextColor="#feefdd"
             onChangeText={(text) => setUser({ ...user, lname: text })} // <-- New input field
             value={user.lname}
           />
           <TextInput
             style={styles.input}
             placeholder="Email"
+            placeholderTextColor="#feefdd"
             onChangeText={(text) => setUser({ ...user, email: text })}
             value={user.email}
+            autoCapitalize="none"
+            passwordRules="" 
           />
           <TextInput
             style={styles.input}
             placeholder="Password"
+            placeholderTextColor="#feefdd"
             onChangeText={(text) => setUser({ ...user, password: text })}
             value={user.password}
             secureTextEntry={!showPassword} // <-- Use showPassword state variable
+            autoCapitalize="none"
+            passwordRules="" 
           />
           <TextInput
             style={styles.input}
             placeholder="Confirm Password"
+            placeholderTextColor="#feefdd"
             onChangeText={(text) => setConfirmPassword(text)}
             value={user.confirmPassword}
             secureTextEntry={!showPassword} // <-- Use showPassword state variable
+            autoCapitalize="none"
           />
 
           <TouchableOpacity
@@ -124,14 +134,17 @@ export default function Register({ navigation }) {
             </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={[styles.button, ]} onPress={registerUser}>
+          <TouchableOpacity style={[styles.button]} onPress={registerUser}>
             <Text style={[GlobalStyles.text, styles.buttonText]}>Register</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.textButton}
             onPress={() => navigation.goBack()}
           >
-            <Text style={[GlobalStyles.text, styles.buttonText]}>Already Registered? <u>Login</u></Text>
+            <Text style={[GlobalStyles.text, styles.buttonText]}>
+              Already Registered?{" "}
+              <Text style={{ textDecorationLine: "underline" }}>Login</Text>
+            </Text>
           </TouchableOpacity>
         </View>
       </View>
