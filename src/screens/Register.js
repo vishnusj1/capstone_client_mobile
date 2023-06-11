@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import GlobalStyles from "./GlobalStyles";
+import GlobalStyles from "../GlobalStyles";
 import AsyncStorage from "@react-native-async-storage/async-storage"; // package is used for storing user details in local storage.
 
 import {
@@ -43,7 +43,7 @@ export default function Register({ navigation }) {
         return;
       }
       if (!validatePassword()) {
-        console.error(
+        console.warn(
           "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character"
         );
         return;

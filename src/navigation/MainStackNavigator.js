@@ -1,6 +1,6 @@
 import { createStackNavigator } from '@react-navigation/stack';
 import TabNavigator from './TabNavigation';
-import StockDetailsScreen from './StockDetailsScreen';
+import StockDetailsScreen from '../screens/StockDetailsScreen';
 
 const MainStack = createStackNavigator();
 

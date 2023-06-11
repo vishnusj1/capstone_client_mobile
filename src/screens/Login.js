@@ -1,5 +1,5 @@
 import React, { useState,useEffect } from "react";
-import GlobalStyles from "./GlobalStyles";
+import GlobalStyles from "../GlobalStyles";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import {
@@ -15,7 +15,7 @@ const Login = ({ navigation }) => {
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
-
+  
   useEffect(() => {
     const fetchUsers = async () => {
       try {

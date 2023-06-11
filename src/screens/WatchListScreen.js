@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useFocusEffect, useNavigation } from "@react-navigation/native"; // <-- Import useFocusEffect
-import GlobalStyles from "./GlobalStyles";
+import GlobalStyles from "../GlobalStyles";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Swipeable } from "react-native-gesture-handler"; // <-- Import Swipeable
 import Icon from "react-native-vector-icons/Ionicons"; // <-- Import Icon
@@ -50,14 +50,25 @@ export default function WatchlistScreen({ navigation }) {
         (stock) => stock.symbol !== symbol
       );
       await AsyncStorage.setItem("watchlist", JSON.stringify(storedWatchlist));
-      setWatchlist(storedWatchlist);
+      setWatchlist([...storedWatchlist]); // Update the state variable
     } catch (error) {
       console.error("Failed to remove stock from watchlist", error);
     }
   };
 
+  const handleLogout = async () => {
+    await AsyncStorage.removeItem("user");
+    navigation.reset({
+      index: 0,
+      routes: [{ name: "Login" }],
+    });
+  };
+
   return (
     <View style={styles.container}>
+      <View style={styles.logoutButton}>
+        <Icon name="log-out-sharp" size={30} color="#feefdd" onPress={handleLogout}/>
+      </View>
       <View style={styles.WatchListScreenContainer}>
         <Text style={[GlobalStyles.text, styles.header]}>Your Watchlist</Text>
         <View style={styles.line} />
@@ -66,7 +77,11 @@ export default function WatchlistScreen({ navigation }) {
             data={watchlist}
             keyExtractor={(item) => item.symbol}
             renderItem={({ item }) => (
-                <SwipeableRow item={item} onDelete={removeFromWatchlist} navigator={navigation}/>
+              <SwipeableRow
+                item={item}
+                onDelete={removeFromWatchlist}
+                navigator={navigation}
+              />
             )}
           />
         ) : (
@@ -97,7 +112,7 @@ export default function WatchlistScreen({ navigation }) {
 function SwipeableRow({ item, onDelete, navigator }) {
   const renderRightActions = () => {
     return (
-      <TouchableOpacity onPress={() => onDelete(item.symbol)}>
+      <TouchableOpacity onPress={() => onDelete(item)}>
         <View style={styles.deleteBox}>
           <Icon name="trash-outline" size={20} color="#FFF" />
         </View>
@@ -107,7 +122,11 @@ function SwipeableRow({ item, onDelete, navigator }) {
 
   return (
     <Swipeable renderRightActions={renderRightActions}>
-      <TouchableOpacity onPress={ ()=> navigator.navigate('StockDetails', {symbol:item.symbol}) }>
+      <TouchableOpacity
+        onPress={() =>
+          navigator.navigate("StockDetails", { symbol: item.symbol , name:item.name})
+        }
+      >
         <View style={styles.item}>
           <Text style={[GlobalStyles.text, styles.symbolText]}>
             {item.symbol}
@@ -210,5 +229,11 @@ const styles = StyleSheet.create({
   },
   deleteText: {
     color: "#FFF",
+  },
+  logoutButton: {
+    position: "absolute",
+    marginTop:20,
+    top: 50,
+    right: 10,
   },
 });

@@ -6,7 +6,6 @@ const ChartComponent = ({ historicalData, companyName }) => {
   const data = historicalData.map(item => item.close).reverse();
   return (
     <View>
-      <Text>{companyName}'s Daily Historical Data</Text>
       <LineChart
         style={{ height: 200 }}
         data={data}

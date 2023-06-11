@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios"; // <-- Import axios for fetching stock list
-import GlobalStyles from "./GlobalStyles";
+import GlobalStyles from "../GlobalStyles";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import {

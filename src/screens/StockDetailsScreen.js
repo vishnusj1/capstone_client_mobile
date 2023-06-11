@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet } from "react-native";
-import GlobalStyles from "./GlobalStyles";
+import GlobalStyles from "../GlobalStyles";
 import axios from "axios";
 import { ALPHA_VANTAGE_API_KEY } from "@env";
-import ChartComponent from "./ChartComponent"; // <-- Import ChartComponent
+import ChartComponent from "../components/ChartComponent"; // <-- Import ChartComponent
+
 
 export default function StockDetailsScreen({ route, navigation }) {
-  const { symbol } = route.params;
+  const { symbol,name } = route.params;
   const [stockInfo, setStockInfo] = useState(null);
   const [stockNews, setStockNews] = useState([]);
   const [stockData, setStockData] = useState(null);
@@ -21,8 +22,6 @@ export default function StockDetailsScreen({ route, navigation }) {
         );
         const data = await response.json();
         setStockData(data.historical);
-        console.log(stockData);
-
         // Fetch stock information
         const infoResponse = await axios.get(
           `https://www.alphavantage.co/query?function=OVERVIEW&symbol=${symbol}&apikey=${ALPHA_VANTAGE_API_KEY}`
@@ -33,6 +32,8 @@ export default function StockDetailsScreen({ route, navigation }) {
           `https://www.alphavantage.co/query?function=NEWS_SENTIMENT&tickers=${symbol}&apikey=${ALPHA_VANTAGE_API_KEY}`
         );
         setStockNews(newsResponse.data);
+        console.log(stockNews)
+        console.log(stockNews);
       } catch (error) {
         console.error("Failed to fetch stock data", error);
       }
@@ -43,18 +44,18 @@ export default function StockDetailsScreen({ route, navigation }) {
 
   return (
     <View style={styles.container}>
-      <View>
-        <Text>Stock Details: {symbol}</Text>
+      <View style={styles.StockScreenContainer}>
+        <Text style={GlobalStyles.text}>{symbol}</Text>
+        <Text style={[GlobalStyles.text,styles.title]}>{name}</Text>
+
         {stockData ? (
           <ChartComponent historicalData={stockData} companyName={symbol} />
         ) : (
-          <Text>Loading...</Text>
+          <Text style={GlobalStyles.text}>Loading...</Text>
         )}
         {stockInfo ? (
           <View>
-            <Text>Name: {stockInfo.Name}</Text>
-            <Text>Industry: {stockInfo.Industry}</Text>
-            <Text>Description: {stockInfo.Description}</Text>
+            <Text style={GlobalStyles.text}>{stockInfo.Description}</Text>
           </View>
         ) : (
           <Text>Loading stock information...</Text>
@@ -94,10 +95,10 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
+    fontWeight: "bold",
   },
   sectionHeader: {
     fontSize: 16,
-    fontWeight: "bold",
     alignSelf: "flex-start",
   },
   form: {

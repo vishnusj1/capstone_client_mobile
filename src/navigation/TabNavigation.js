@@ -1,14 +1,14 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import WatchlistScreen from "./WatchListScreen";
-import SearchScreen from "./SearchScreen";
+import WatchlistScreen from "../screens/WatchListScreen";
+import SearchScreen from "../screens/SearchScreen";
 import { Ionicons } from '@expo/vector-icons';
 
 const Tab = createBottomTabNavigator();
 
 function TabNavigator() {
   return (
-    <Tab.Navigator initialRouteName="Search"
+    <Tab.Navigator initialRouteName="Watchlist"
       screenOptions={({ route }) => ({
         headerShown: false,
         tabBarStyle: {
