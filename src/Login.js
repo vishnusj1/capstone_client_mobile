@@ -1,5 +1,5 @@
 import React, { useState,useEffect } from "react";
-import globalStyles from "./globalStyles";
+import GlobalStyles from "./GlobalStyles";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import {
@@ -92,7 +92,7 @@ const Login = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <View style={styles.LoginContainer}>
-        <Text style={[globalStyles.text, styles.header]}>Login</Text>
+        <Text style={[GlobalStyles.text, styles.header]}>Login</Text>
         <View style={styles.form}>
           <TextInput
             style={styles.input}
@@ -114,10 +114,10 @@ const Login = ({ navigation }) => {
             <Text style={styles.error}>{passwordError}</Text>
           ) : null}
           <TouchableOpacity style={styles.button} onPress={handleLogin}>
-            <Text style={[globalStyles.text, styles.buttonText]}>Login</Text>
+            <Text style={[GlobalStyles.text, styles.buttonText]}>Login</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.textButton} onPress={() => navigation.navigate("Register")}>
-            <Text style={[globalStyles.text, styles.buttonText]}>
+            <Text style={[GlobalStyles.text, styles.buttonText]}>
               Don't have an account? <u>Register</u>
             </Text>
           </TouchableOpacity>

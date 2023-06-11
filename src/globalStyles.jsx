@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 
-const globalStyles = StyleSheet.create({
+const GlobalStyles = StyleSheet.create({
   text: {
     color: '#feefdd',
   },
@@ -10,4 +10,4 @@ const globalStyles = StyleSheet.create({
   },
 });
 
-export default globalStyles;
+export default GlobalStyles;

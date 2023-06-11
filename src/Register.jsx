@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import globalStyles from "./globalStyles";
+import GlobalStyles from "./GlobalStyles";
 import AsyncStorage from "@react-native-async-storage/async-storage"; // package is used for storing user details in local storage.
 
 import {
@@ -80,7 +80,7 @@ export default function Register({ navigation }) {
   return (
     <View style={styles.container}>
       <View style={styles.RegisterContainer}>
-        <Text style={[globalStyles.text, styles.header]}>Register</Text>
+        <Text style={[GlobalStyles.text, styles.header]}>Register</Text>
         <View style={styles.form}>
           <TextInput
             style={styles.input}
@@ -119,19 +119,19 @@ export default function Register({ navigation }) {
             style={styles.button}
             onPress={() => setShowPassword(!showPassword)}
           >
-            <Text style={[globalStyles.text, styles.buttonText]}>
+            <Text style={[GlobalStyles.text, styles.buttonText]}>
               {showPassword ? "Hide Password" : "Show Password"}
             </Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={[styles.button, ]} onPress={registerUser}>
-            <Text style={[globalStyles.text, styles.buttonText]}>Register</Text>
+            <Text style={[GlobalStyles.text, styles.buttonText]}>Register</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.textButton}
             onPress={() => navigation.goBack()}
           >
-            <Text style={[globalStyles.text, styles.buttonText]}>Already Registered? <u>Login</u></Text>
+            <Text style={[GlobalStyles.text, styles.buttonText]}>Already Registered? <u>Login</u></Text>
           </TouchableOpacity>
         </View>
       </View>

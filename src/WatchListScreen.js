@@ -1,67 +1,86 @@
-import React, { useState, useEffect } from "react";
-import globalStyles from "./globalStyles";
+import React, { useState } from "react";
+import { useFocusEffect } from "@react-navigation/native"; // <-- Import useFocusEffect
+import GlobalStyles from "./GlobalStyles";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Swipeable } from "react-native-gesture-handler"; // <-- Import Swipeable
+import Icon from "react-native-vector-icons/Ionicons"; // <-- Import Icon
+
 import {
   View,
   Text,
   FlatList,
   StyleSheet,
-  TextInput,
   Button,
+  Alert,
+  TouchableOpacity,
 } from "react-native"; // <-- Import FlatList
-import { ALPHA_VANTAGE_API_KEY } from "@env"; // <-- Import API key
 
 export default function WatchlistScreen({ navigation }) {
-  const [stocks, setStocks] = useState([]); // state variable to store User's watchlist
-  const [symbol, setSymbol] = useState("");
+  const [watchlist, setWatchlist] = useState([]); // <-- New state variable
 
-  useEffect(() => {
-    fetchStocks();
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchWatchlist = async () => {
+        try {
+          const storedWatchlist =
+            JSON.parse(await AsyncStorage.getItem("watchlist")) || [];
+          setWatchlist(storedWatchlist);
+          const hasShownAlert = await AsyncStorage.getItem("hasShownAlert");
+          if (!hasShownAlert) {
+            Alert.alert(
+              "Tip",
+              "Swipe a stock to the right to remove it from your watchlist."
+            );
+            await AsyncStorage.setItem("hasShownAlert", "true");
+          }
+        } catch (error) {
+          console.error("Failed to fetch watchlist", error);
+        }
+      };
 
-  const fetchStocks = async () => {
+      fetchWatchlist();
+    }, [])
+  );
+
+  const removeFromWatchlist = async (symbol) => {
     try {
-      const response = await fetch(
-        `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=${ALPHA_VANTAGE_API_KEY}`
+      let storedWatchlist =
+        JSON.parse(await AsyncStorage.getItem("watchlist")) || [];
+      storedWatchlist = storedWatchlist.filter(
+        (stock) => stock.symbol !== symbol
       );
-      const data = await response.json();
-
-      if (data["Global Quote"]) {
-        setStocks((prevStocks) => [...prevStocks, data["Global Quote"]]);
-      } else {
-        console.error("Failed to fetch stock data for symbol:", symbol);
-      }
-
-      setSymbol(""); // <-- Reset the symbol
+      await AsyncStorage.setItem("watchlist", JSON.stringify(storedWatchlist));
+      setWatchlist(storedWatchlist);
     } catch (error) {
-      console.error("Failed to fetch stock data", error);
+      console.error("Failed to remove stock from watchlist", error);
     }
   };
-  //  make watchlist data persist
-  //  use a different screen
-  //  use context provider to share state
+
   return (
     <View style={styles.container}>
       <View style={styles.WatchListScreenContainer}>
-        <Text style={[globalStyles.text, styles.header]}>Your Watchlist</Text>
+        <Text style={[GlobalStyles.text, styles.header]}>Your Watchlist</Text>
         <View style={styles.line} />
-        {stocks.length > 0 ? (
+        {watchlist.length > 0 ? (
           <FlatList
-            data={stocks}
-            keyExtractor={(item) => item["01. symbol"]}
+            data={watchlist}
+            keyExtractor={(item) => item.symbol}
             renderItem={({ item }) => (
-              <View style={styles.item}>
-                <Text style={styles.text}>
-                  {item["01. symbol"]}: {item["05. price"]}
-                </Text>
-              </View>
+              <SwipeableRow item={item} onDelete={removeFromWatchlist} />
             )}
           />
         ) : (
           <View>
-            <Text style={[globalStyles.text, styles.message]}>
+            <Text style={[GlobalStyles.text, styles.message]}>
               No items in your watchlist
             </Text>
-            <View style={{ flexDirection: "row", alignItems: "center" , justifyContent:"center"}}>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
               <Button
                 title="Add Stocks"
                 onPress={() => navigation.navigate("Search")}
@@ -72,6 +91,31 @@ export default function WatchlistScreen({ navigation }) {
         )}
       </View>
     </View>
+  );
+}
+
+function SwipeableRow({ item, onDelete }) {
+  const renderRightActions = () => {
+    return (
+      <TouchableOpacity onPress={() => onDelete(item.symbol)}>
+        <View style={styles.deleteBox}>
+          <Icon name="trash-outline" size={20} color="#FFF" />
+        </View>
+      </TouchableOpacity>
+    );
+  };
+
+  return (
+    <Swipeable renderRightActions={renderRightActions}>
+      <TouchableOpacity>
+        <View style={styles.item}>
+          <Text style={[GlobalStyles.text, styles.symbolText]}>
+            {item.symbol}
+          </Text>
+          <Text style={[GlobalStyles.text, styles.nameText]}>{item.name}</Text>
+        </View>
+      </TouchableOpacity>
+    </Swipeable>
   );
 }
 
@@ -133,9 +177,9 @@ const styles = StyleSheet.create({
     marginVertical: 5,
     alignSelf: "flex-start",
   },
-  itemContainer: {
+  item: {
     flex: 1,
-    flexDirection: "row",
+    flexDirection: "column",
     paddingHorizontal: 10,
     paddingVertical: 8,
   },
@@ -157,6 +201,14 @@ const styles = StyleSheet.create({
     fontSize: 18,
     textAlign: "center",
     marginTop: 20,
-    marginBottom: 20,
+  },
+  deleteBox: {
+    backgroundColor: 'red',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 100,
+  },
+  deleteText: {
+    color: '#FFF',
   },
 });

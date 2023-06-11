@@ -1,18 +1,22 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios"; // <-- Import axios for fetching stock list
-import globalStyles from "./globalStyles";
+import GlobalStyles from "./GlobalStyles";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 import {
   View,
   Text,
   FlatList,
   StyleSheet,
   TextInput,
-  Button,
+  Alert,
+  TouchableOpacity
 } from "react-native"; // <-- Import FlatList
+
 
 export default function SearchScreen() {
   const [stocks, setStocks] = useState([]);
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState("");
 
   useEffect(() => {
     const fetchStocks = async () => {
@@ -38,11 +42,11 @@ export default function SearchScreen() {
   }, []);
 
   const filteredStocks = stocks
-    .filter(stock => {
+    .filter((stock) => {
       return (
         stock.symbol.toLowerCase().includes(query.toLowerCase()) ||
         stock.name.toLowerCase().includes(query.toLowerCase()) ||
-        stock.sector.toLowerCase().includes(query.toLowerCase()) 
+        stock.sector.toLowerCase().includes(query.toLowerCase())
       );
     })
     .sort((a, b) => {
@@ -58,6 +62,24 @@ export default function SearchScreen() {
       }
     });
 
+  const addToWatchlist = async (stock) => {
+    try {
+      const watchlist =
+        JSON.parse(await AsyncStorage.getItem("watchlist")) || [];
+      if (!watchlist.some((item) => item.symbol === stock.symbol)) {
+        watchlist.push(stock);
+        await AsyncStorage.setItem("watchlist", JSON.stringify(watchlist));
+        Alert.alert(`${stock.symbol} is added to your watchlist`);
+        console.log("Stock already in watchlist:", stock);
+      } else {
+        Alert.alert(`${stock.symbol} is already in your watchlist`);
+      }
+    } catch (error) {
+      console.error("Failed to add stock to watchlist", error);
+      Alert.alert("Error encountered, try again");
+    }
+  };
+
   return (
     <View style={styles.container}>
       <TextInput
@@ -69,17 +91,23 @@ export default function SearchScreen() {
       {stocks.length > 0 ? (
         <FlatList
           data={filteredStocks}
-          keyExtractor={(item) => item["symbol"]}
+          keyExtractor={(item) => item.symbol}
           renderItem={({ item }) => (
-            <View style={styles.item}>
-                <Text style={[globalStyles.text,styles.symbolText]}>{item.symbol}</Text>
-                <Text style={[globalStyles.text,styles.nameText]}>{item.name}</Text>
-            </View>
+            <TouchableOpacity onPress={() => addToWatchlist(item)}>
+              <View style={styles.item}>
+                <Text style={[GlobalStyles.text, styles.symbolText]}>
+                  {item.symbol}
+                </Text>
+                <Text style={[GlobalStyles.text, styles.nameText]}>
+                  {item.name}
+                </Text>
+              </View>
+            </TouchableOpacity>
           )}
         />
       ) : (
         <View>
-          <Text style={[globalStyles.text, styles.message]}>
+          <Text style={[GlobalStyles.text, styles.message]}>
             Fetching stocks
           </Text>
         </View>
@@ -123,7 +151,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     width: "100%",
     color: "#feefdd",
-    outline:0,
   },
   button: {
     backgroundColor: "blue",
